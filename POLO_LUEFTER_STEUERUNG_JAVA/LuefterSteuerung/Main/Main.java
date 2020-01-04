@@ -21,24 +21,24 @@ import com.fazecast.jSerialComm.*;
 
 public class Main {
     private static final String VERSION = "1.0.0.0";
-	public static boolean debug = false;
+    public static boolean debug = false;
     public static boolean logging = false;
     public static boolean log_ready = false;
     public static String branch = "master";
-    public static String projectUri = "https://raw.githubusercontent.com/lukasaldersley/Luefter/";
-    public static String downloadTargetUri = "https://github.com/lukasaldersley/Raumklima/raw/";
+    public static String projectUri = "https://raw.githubusercontent.com/lukasaldersley/POLO_LUEFTER_STEUERUNG/";
+    public static String downloadTargetUri = "https://github.com/lukasaldersley/POLO_LUEFTER_STEUERUNG/raw/";
     private static boolean fromUpdate;
     private static FileWriter logWriter;
     private static File logFile;
-	private static File oldFile;
-	private static URL source;
-	private static ReadableByteChannel readableByteChannelFromSource;
-	private static FileOutputStream fileOutputStream;
-	private static BufferedReader br;
-	private static Scanner serialScanner;
-	private static BufferedWriter serialWriter;
-    
-    
+    private static File oldFile;
+    private static URL source;
+    private static ReadableByteChannel readableByteChannelFromSource;
+    private static FileOutputStream fileOutputStream;
+    private static BufferedReader br;
+    private static Scanner serialScanner;
+    private static BufferedWriter serialWriter;
+	private static String PORTNAME=;
+
     
     /**
      * Checks whether an Update is available
@@ -184,7 +184,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-    
 
     private static int factorial(int in){//irgendwie f�r die cmd arguments
         int res=1;
@@ -282,22 +281,28 @@ public class Main {
         logln(Charset.defaultCharset());
         // Check for Software updates
         if (!fromUpdate) {
-                if (checkIfUpdateAvailable()) {
-                    updateJar();
+            if (checkIfUpdateAvailable()) {
+                updateJar();
             }
         }
 
         SerialPort[] ports=SerialPort.getCommPorts();
         for(SerialPort port:ports) {
-            logln(port.getDescriptivePortName());
-            //delete again this is just for structure
-            port.setBaudRate(115200);
-            boolean bool=true;
-            bool=port.openPort();
-            bool=port.isOpen();
-            serialScanner = new Scanner(new InputStreamReader(port.getInputStream()));
-            serialWriter = new BufferedWriter(new OutputStreamWriter(port.getOutputStream()));
-            
+            String name=port.getDescriptivePortName();
+            if(name.contains("Bluetooth")){
+                logln("skipped bluetooth serial port");
+                continue;
+            }
+            if(name.equals(PORTNAME)){
+                logln(name);
+                //delete again this is just for structure
+                port.setBaudRate(115200);
+                boolean bool=true;
+                bool=port.openPort();
+                bool=port.isOpen();
+                serialScanner = new Scanner(new InputStreamReader(port.getInputStream()));
+                serialWriter = new BufferedWriter(new OutputStreamWriter(port.getOutputStream()));
+            }
         }
     }
 }
