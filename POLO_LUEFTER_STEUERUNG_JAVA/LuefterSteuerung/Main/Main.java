@@ -90,7 +90,7 @@ public class Main {
             // oldFile.delete();
             // fileUrl:
             // "https://raw.githubusercontent.com/lukasaldersley/Raumklima/master/PublicVersion/VERSION"
-            source = new URL(downloadTargetUri + branch + "/ready/Raumklima.jar");
+            source = new URL(downloadTargetUri + branch + "/ready/PoloLuefterSteuerung.jar");
             readableByteChannelFromSource = Channels.newChannel(source.openStream());
             fileOutputStream = new FileOutputStream("PoloLuefterSteuerung.jar");
             fileOutputStream.getChannel().transferFrom(readableByteChannelFromSource, 0, Long.MAX_VALUE);
