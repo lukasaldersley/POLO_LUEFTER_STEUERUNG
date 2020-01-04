@@ -56,24 +56,32 @@ void loop() {
         resp.replace("\n","");
         if (resp.equals("YES")) {
           DELAY = temp;
+          EEPROM.put(ADDRESS,DELAY);
           Serial.println("set delay as: ");
           printTime(DELAY);
           Serial.println();
           digitalWrite(RELAIS, OFF);
           Serial.println("turned off the relais");
+          Serial.println("DONE");
         }
         else {
           Serial.println("discarded input");
+          Serial.println("CANCELLED");
         }
       }
       else{
         DELAY=temp;
+          EEPROM.put(ADDRESS,DELAY);
           Serial.println("set delay as: ");
           printTime(DELAY);
           Serial.println();
           digitalWrite(RELAIS, OFF);
           Serial.println("turned off the relais");
+          Serial.println("DONE");
       }
+    }
+    else if(cmd.startsWith("VERSION")){
+      Serial.println("1.0.0.0");
     }
     else{
       Serial.print("INVALID INPUT: ");
@@ -82,7 +90,7 @@ void loop() {
   }
   if ((digitalRead(RELAIS) == OFF) && (millis() > DELAY)) {
     digitalWrite(RELAIS, ON);
-    Serial.println("turned on the relias");
+    Serial.println("turned on the relais");
   }
   delay(100);
 }
