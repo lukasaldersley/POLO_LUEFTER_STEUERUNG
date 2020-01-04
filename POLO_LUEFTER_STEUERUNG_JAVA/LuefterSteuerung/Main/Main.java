@@ -20,7 +20,7 @@ import javax.swing.*;
 import com.fazecast.jSerialComm.*;
 
 public class Main {
-    private static final String VERSION = "1.0.0.0";
+    private static final String VERSION = "1.0.0.1";
     public static boolean debug = false;
     public static boolean logging = false;
     public static boolean log_ready = false;
@@ -37,7 +37,8 @@ public class Main {
     private static BufferedReader br;
     private static Scanner serialScanner;
     private static BufferedWriter serialWriter;
-	private static String PORTNAME=;
+	private static String PORTNAME="TODO";
+	private static JFrame frame;
 
     
     /**
@@ -304,5 +305,9 @@ public class Main {
                 serialWriter = new BufferedWriter(new OutputStreamWriter(port.getOutputStream()));
             }
         }
+        frame=new JFrame("TEST");
+        frame.setBounds(500, 500, 200, 200);
+        frame.setVisible(true);
+        
     }
 }
