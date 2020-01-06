@@ -10,7 +10,7 @@ void setup() {
   //unsigned long tmp=5UL*1000*60+30*1000;
   //EEPROM.put(ADDRESS,tmp);
   Serial.begin(115200);
-  Serial.println("To set the delay type 'SET_TIME x', where x is the number of milliseconds to wait");
+  Serial.println("To set the delay, type 'SET_TIME x', where x is the number of milliseconds to wait");
   EEPROM.get(ADDRESS, DELAY);
   Serial.print("DELAY: ");
   Serial.print(DELAY);
@@ -30,6 +30,12 @@ void printTime(unsigned long in) {
   Serial.print(" Seconds");
 }
 
+bool RELAIS_STATE=OFF;
+void SET_RELAIS(bool state){
+  digitalWrite(RELAIS,state);
+  RELAIS_STATE=state;
+}
+
 void loop() {
   if (Serial.available()) {
     String cmd = Serial.readString();
@@ -37,12 +43,12 @@ void loop() {
       cmd.replace("SET_TIME ", "");
       cmd.replace("\r", "");
       cmd.replace("\n", "");
-      Serial.print("using '");
+      /*Serial.print("using '");
       Serial.print(cmd);
-      Serial.println("' as new timestamp");
+      Serial.println("' as new timestamp");*/
       unsigned long temp = cmd.toInt();
-      Serial.print("integer rep: ");
-      Serial.println(temp);
+      /*Serial.print("integer rep: ");
+      Serial.println(temp);*/
       if (temp < 1000) {
         Serial.println("ERROR - sub-second time is NOT supported");
       }
@@ -57,26 +63,26 @@ void loop() {
         if (resp.equals("YES")) {
           DELAY = temp;
           EEPROM.put(ADDRESS,DELAY);
-          Serial.println("set delay as: ");
+          Serial.println("SET INITIAL DELAY AS: ");
           printTime(DELAY);
           Serial.println();
-          digitalWrite(RELAIS, OFF);
-          Serial.println("turned off the relais");
+          SET_RELAIS(OFF);
+          Serial.println("SET RELAIS TO OFF");
           Serial.println("DONE");
         }
         else {
-          Serial.println("discarded input");
+          //Serial.println("discarded input");
           Serial.println("CANCELLED");
         }
       }
       else{
         DELAY=temp;
           EEPROM.put(ADDRESS,DELAY);
-          Serial.println("set delay as: ");
+          Serial.println("SET INITIAL DELAY AS: ");
           printTime(DELAY);
           Serial.println();
-          digitalWrite(RELAIS, OFF);
-          Serial.println("turned off the relais");
+          SET_RELAIS(OFF);
+          Serial.println("SET RELAIS TO OFF");
           Serial.println("DONE");
       }
     }
@@ -88,9 +94,9 @@ void loop() {
       Serial.println(cmd);
     }
   }
-  if ((digitalRead(RELAIS) == OFF) && (millis() > DELAY)) {
-    digitalWrite(RELAIS, ON);
-    Serial.println("turned on the relais");
+  if ((RELAIS_STATE == OFF) && (millis() > DELAY)) {
+    SET_RELAIS(ON);
+          Serial.println("SET RELAIS TO ON");
   }
   delay(100);
 }
